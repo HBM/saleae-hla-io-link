@@ -1,5 +1,5 @@
-# High Level Analyzer
-# For more information and documentation, please go to https://support.saleae.com/extensions/high-level-analyzer-extensions
+# IO Link Frame Classes
+# For more information and documentation, please go to https://io-link.com/en/index.php
 
 from saleae.analyzers import AnalyzerFrame
 
@@ -61,14 +61,11 @@ class IOLinkFrame(AnalyzerFrame):
             self.data["event"] = (frame.data["data"][0] & 0x80) != 0
             ckssum = frame.data["data"][0] & 0x3f
             if (self.cktksum != chksum[self.cktacc]) and (ckssum != chksum[self.cksacc]):
-                self.error = "CKT, CKS"
-                self.data["error"] = self.error
+                self.data["error"] = "CKT, CKS"
             elif chksum[self.cktacc] != self.cktksum:
-                self.error = "CKT"
-                self.data["error"] = self.error
+                self.data["error"] = "CKT"
             elif chksum[self.cksacc] != ckssum:
-                self.error = "CKS"
-                self.data["error"] = self.error
+                self.data["error"] = "CKS"
             return self
 
     def printframe(self):

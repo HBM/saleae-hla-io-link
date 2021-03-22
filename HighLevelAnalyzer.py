@@ -3,6 +3,7 @@
 
 from saleae.analyzers import HighLevelAnalyzer, AnalyzerFrame, StringSetting, NumberSetting, ChoicesSetting
 import IOLinkFrame
+import DirectparameterPage
 
 type1_frames = {
     #          (pd, od)
@@ -108,4 +109,7 @@ class Hla(HighLevelAnalyzer):
         if "error" in frame.data:
             return
 
-        return self.process.send(frame)
+        ret = self.process.send(frame)
+        if ret is not None and ret.data['Channel'] == 'Page':
+            DirectparameterPage.printFrame(ret)
+        return ret

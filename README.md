@@ -1,13 +1,28 @@
 
-  # My Extension
+ # Saleae IO-Link Extension
   
-## Getting started
+This is a HighLevelAnalyzer for [IO-Link](https://io-link.com/en/) communication and the Saleae Logic 2 Software. General information on HighLevelAnalyzers can be found at [Saleae](https://support.saleae.com/extensions).
+  
+## Usage
+1. Add the analyzer to Logic 2 from the extension window.
+2. Capture or load up a capture of IO-Link traffic. You need to capture the C/Q line (24V) directly. You cannot capture TX and RX independetly between Transceiver and your uC.
+3. Add a "Async Serial" Analyzer with "Even Parity", "One Stop Bit", "LSB first", "Signal Inversion", and the Baudrate of your IO-Link device.
+   - COM1 =   4800
+   - COM2 =  38400
+   - COM3 = 230400
+4. Add the "IO Link" Analyzer with the "Async Serial" analyzer as source. Set the M-Sequence types for Type\_1 and Type\_2 frames. When Type\_2\_V is selected, you need to specifiy the Byte length of PDin, PDout, and OD. If you don't know the capabilities of your device, try to capture the reading of the "M-Sequency Capabilities" field from DirectParameter Page 1 during the Startup Phase and look up the corresponding lengths in the IO-Link specification.
 
-1. Build your extension by updating the Python files for your needs
-2. Create a public Github repo and push your code 
-3. Update this README
-4. Open the Logic app and publish your extension
-5. Create a Github release
-6. Debug your hardware like you've never done before :)
+## Features
+- Support of all M-Sequence types
+- Parsing of all frame fields
+- Checksum test for CKS and CKT
+- DirectParameterPage accesses printed to console
+
+## Non-Features
+Things that are (currently) not supported:
+- Check of timing contrains
+- Interleaved mode
+- Parsing of ISDU requests
+- Anything else I didn't think of...
 
   

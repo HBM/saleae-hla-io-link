@@ -5,8 +5,8 @@ This is a HighLevelAnalyzer for [IO-Link](https://io-link.com/en/) communication
   
 ## Usage
 1. Add the analyzer to Logic 2 from the extension window.
-2. Capture or load up a capture of IO-Link traffic. You need to capture the C/Q line (24V) directly. You cannot capture TX and RX independetly between Transceiver and your uC.
-3. Add a "Async Serial" Analyzer with "Even Parity", "One Stop Bit", "LSB first", "Signal Inversion", and the Baudrate of your IO-Link device.
+2. Capture or load up a capture of IO-Link traffic. You need to capture the C/Q line (24V) directly. You cannot capture TX and RX independently between Transceiver and your uC.
+3. Add an "Async Serial" Analyzer with "Even Parity", "One Stop Bit", "LSB first", "Signal Inversion", and the Baudrate of your IO-Link device.
    - COM1 =   4800
    - COM2 =  38400
    - COM3 = 230400
@@ -15,8 +15,9 @@ This is a HighLevelAnalyzer for [IO-Link](https://io-link.com/en/) communication
 ## Features
 - Support of all M-Sequence types
 - Parsing of all frame fields
-- Checksum test for CKS and CKT
+- Checksum tests for CKS and CKT
 - DirectParameterPage accesses printed to console
+- Parsing of predefined MasterCommands and SystemCommands
 
 ## Non-Features
 Things that are (currently) not supported:
@@ -25,4 +26,3 @@ Things that are (currently) not supported:
 - Parsing of ISDU requests
 - Anything else I didn't think of...
 
-  

@@ -26,7 +26,7 @@ type2_frames = {
 
 
 # High level analyzers must subclass the HighLevelAnalyzer class.
-class Hla(HighLevelAnalyzer):
+class IOLinkAnalyzer(HighLevelAnalyzer):
     # List of settings that a user can set for this High Level Analyzer.
     type1_frame = ChoicesSetting(label = 'Type_1', choices = type1_frames.keys())
     type2_frame = ChoicesSetting(label = 'Type_2', choices = type2_frames.keys())

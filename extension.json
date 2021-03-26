@@ -1,13 +1,13 @@
 {
   "name": "IO Link",
   "apiVersion": "1.0.0",
-  "author": "Sebastian",
+  "author": "Sebastian Herber",
   "version": "0.0.1",
   "description": "",
   "extensions": {
     "IO Link": {
       "type": "HighLevelAnalyzer",
-      "entryPoint": "HighLevelAnalyzer.Hla"
+      "entryPoint": "IOLinkAnalyzer.IOLinkAnalyzer"
     }
   }
 }

@@ -52,12 +52,12 @@ def printDPP2(frame: AnalyzerFrame):
 
 
 def printMasterCommand(frame: AnalyzerFrame):
-    val = int(frame.data['OD'][:4] ,0)
+    val = int(frame.data['OD'][:4], 0)
     print("MasterCommand: " + hex(val) + " (" + masterCommand.get(val, "unknown") + ")")
 
 
 def printSystemCommand(frame: AnalyzerFrame):
-    val = int(frame.data['OD'][:4] ,0)
+    val = int(frame.data['OD'][:4], 0)
     print("SystemCommand: " + hex(val) + " (" + systemCommand.get(val, "unknown") + ")")
 
 

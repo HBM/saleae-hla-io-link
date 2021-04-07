@@ -99,7 +99,7 @@ class IOLinkFrameType1(IOLinkFrame):
         super().__init__(name, sum(len) + 3, first_frame, second_frame)
         self.pd_len = len[0]
         self.od_len = len[1]
-        self.key = ("OD", "PD")[self.pd_len > 1]
+        self.key = ("OD", "PD")[self.pd_len > 0]
 
     def append(self, frame):
         if self.numOfBytes < self.frameLength - 1:

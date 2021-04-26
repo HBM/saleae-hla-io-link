@@ -12,6 +12,9 @@ This is a HighLevelAnalyzer for [IO-Link](https://io-link.com/en/) communication
    - COM3 = 230400
 4. Add the "IO Link" Analyzer with the "Async Serial" analyzer as source. Set the M-Sequence types for Type\_1 and Type\_2 frames. When Type\_2\_V is selected, you need to specifiy the Byte length of PDin, PDout, and OD. If you don't know the capabilities of your device, try to capture the reading of the "M-Sequency Capabilities" field from DirectParameter Page 1 during the Startup Phase and look up the corresponding lengths in the IO-Link specification.
 
+## Examples
+The "examples" folder contains a IO-Link capture with the settings "Type\_1\_V (8 OD)", "Type\_2\_V", "PDout length" = 0, "PDin length" = 4, "OD length" = 2.
+
 ## Features
 - Support of all M-Sequence types
 - Parsing of all frame fields

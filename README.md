@@ -15,6 +15,8 @@ This is a HighLevelAnalyzer for [IO-Link](https://io-link.com/en/) communication
 ## Examples
 The "examples" folder contains a IO-Link capture with the settings "Type\_1\_V (8 OD)", "Type\_2\_V", "PDout length" = 0, "PDin length" = 4, "OD length" = 2.
 
+![Example](https://github.com/HBM/saleae-hla-io-link/raw/main/examples/demo.png)
+
 ## Features
 - Support of all M-Sequence types
 - Parsing of all frame fields

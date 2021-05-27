@@ -83,9 +83,11 @@ class IOLinkFrame(AnalyzerFrame):
         self.numOfBytes = self.numOfBytes + 1
         self.end_time = frame.end_time
         if self.numOfBytes == self.frameLength:
-            self.data["valid"] = (frame.data["data"][0] & 0x40) == 0
-            self.data["event"] = (frame.data["data"][0] & 0x80) != 0
-            ckssum = frame.data["data"][0] & 0x3f
+            data = frame.data["data"][0]
+            self.data["valid"] = (data & 0x40) == 0
+            self.data["event"] = (data & 0x80) != 0
+            self.cksacc = self.cksacc ^ (data & 0xC0)
+            ckssum = data & 0x3F
             if (self.cktksum != chksum[self.cktacc]) and (ckssum != chksum[self.cksacc]):
                 self.data["error"] = "CKT, CKS"
             elif chksum[self.cktacc] != self.cktksum:

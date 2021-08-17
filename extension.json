@@ -2,7 +2,7 @@
   "name": "IO Link",
   "apiVersion": "1.0.0",
   "author": "Sebastian Herber",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "extensions": {
     "IO Link": {

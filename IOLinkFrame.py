@@ -106,7 +106,8 @@ class IOLinkFrame(AnalyzerFrame):
                 self.data["error"] = "CKT"
             elif chksum[self.cksacc] != ckssum:
                 self.data["error"] = "CKS"
-            return self
+            return True
+        return False
 
     def printframe(self):
         addr = self.data["Addr"][0]

@@ -108,6 +108,8 @@ class IOLinkAnalyzer(HighLevelAnalyzer):
         type2_frames['Type_2_V'] = (self.pdout_len, self.od_len, self.pdin_len)
 
     def initFrame(self, frame0, frame1):
+        if (frame1.start_time - frame0.end_time > (frame0.end_time - frame0.start_time) / 10.5): # frames too far apart
+            return None
         frametype = frame1.data["data"][0] >> 6
         if frametype == 0:
             return IOLinkFrame.IOLinkFrameType0(frame0, frame1)
@@ -121,14 +123,26 @@ class IOLinkAnalyzer(HighLevelAnalyzer):
             return IOLinkFrame.IOLinkFrameType3(frame0, frame1)
         return None
 
+    # ugly but works, refactoring welcome
     def parseByte(self):
-        frame: AnalyzerFrame = yield None
+        firstUARTframe = (yield None)
+        pendingFrame = None
         while True:
-            pendingFrame = self.initFrame(frame, (yield None))
-            ret: AnalyzerFrame = None
-            while ret is None:
-                ret = pendingFrame.append((yield None))
-            frame = yield ret
+            nextUARTframe = (yield pendingFrame)
+            pendingFrame = self.initFrame(firstUARTframe, nextUARTframe)
+            if (pendingFrame is None):
+                firstUARTframe = nextUARTframe
+                continue
+            while True:
+                nextUARTframe = (yield None)
+                if pendingFrame.canappend(nextUARTframe) is False:
+                    pendingFrame.data['error'] = 'Timing'
+                    firstUARTframe = nextUARTframe
+                    break
+                if pendingFrame.append(nextUARTframe) is True:
+                    firstUARTframe = (yield pendingFrame)
+                    pendingFrame = None
+                    break
 
     def decode(self, frame: AnalyzerFrame):
         if frame.type != 'data':

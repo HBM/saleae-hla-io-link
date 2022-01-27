@@ -82,11 +82,11 @@ class IOLinkFrame(AnalyzerFrame):
     def append(self, frame):
         self.numOfBytes = self.numOfBytes + 1
         self.end_time = frame.end_time
-        if self.numOfBytes == self.frameLength:
+        if self.numOfBytes >= self.frameLength:
             data = frame.data["data"][0]
             self.data["valid"] = (data & 0x40) == 0
             self.data["event"] = (data & 0x80) != 0
-            self.cksacc = self.cksacc ^ (data & 0xC0)
+            self.cksacc ^= (data & 0xC0)
             ckssum = data & 0x3F
             if (self.cktksum != chksum[self.cktacc]) and (ckssum != chksum[self.cksacc]):
                 self.data["error"] = "CKT, CKS"
@@ -111,9 +111,9 @@ class IOLinkFrameType0(IOLinkFrame):
         if self.numOfBytes == 2:
             self.data["OD"] = "0x{:02x}".format(data)
             if self.data['Direction'] == 'Write':
-                self.cktacc = self.cktacc ^ data
+                self.cktacc ^= data
             else:
-                self.cksacc = self.cksacc ^ data
+                self.cksacc ^= data
         return super().append(frame)
 
     def printframe(self):
@@ -133,9 +133,9 @@ class IOLinkFrameType1(IOLinkFrame):
         if self.numOfBytes < self.frameLength - 1:
             data = frame.data["data"][0]
             if self.data['Direction'] == 'Write':
-                self.cktacc = self.cktacc ^ data
+                self.cktacc ^= data
             else:
-                self.cksacc = self.cksacc ^ data
+                self.cksacc ^= data
             self.data[self.key] = self.data.get(self.key, '0x') + "{:02x}".format(data)
         return super().append(frame)
 
@@ -155,17 +155,17 @@ class IOLinkFrameType2(IOLinkFrame):
     def append(self, frame):
         data = frame.data["data"][0]
         if self.numOfBytes < (2 + self.pdout_len):
-            self.cktacc = self.cktacc ^ data
+            self.cktacc ^= data
             self.data['PDout'] = self.data.get('PDout', '0x') + "{:02x}".format(data)
         elif self.numOfBytes < (2 + self.pdout_len + self.od_len):
             if self.data['Direction'] == 'Write':
-                self.cktacc = self.cktacc ^ data
+                self.cktacc ^= data
             else:
-                self.cksacc = self.cksacc ^ data
+                self.cksacc ^= data
             self.data['OD'] = self.data.get('OD', '0x') + "{:02x}".format(data)
         elif self.numOfBytes < (2 + self.pdout_len + self.od_len + self.pdin_len):
             self.data['PDin'] = self.data.get('PDin', '0x') + "{:02x}".format(data)
-            self.cksacc = self.cksacc ^ data
+            self.cksacc ^= data
 
         return super().append(frame)
 

@@ -96,14 +96,14 @@ class IOLinkAnalyzer(HighLevelAnalyzer):
 
     def __init__(self):
         self.process = self.parseByte()
-        self.process.send(None)
+        next(self.process)
         str = '{{data.Direction}} {{data.Channel}} {{data.Addr}}'
         if self.pdout_len > 0:
-            str = str + ' PDout: {{data.PDout}}'
+            str += ' PDout: {{data.PDout}}'
         if self.od_len > 0:
-            str = str + ' OD: {{data.OD}}'
+            str += ' OD: {{data.OD}}'
         if self.pdin_len > 0:
-            str = str + ' PDin: {{data.PDin}}'
+            str += ' PDin: {{data.PDin}}'
         self.result_types['Type_2_V'] = {'format': str}
         type2_frames['Type_2_V'] = (self.pdout_len, self.od_len, self.pdin_len)
 

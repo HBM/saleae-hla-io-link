@@ -117,6 +117,8 @@ class IOLinkAnalyzer(HighLevelAnalyzer):
         if frametype == 2:
             len = type2_frames[self.type2_frame]
             return IOLinkFrame.IOLinkFrameType2(self.type2_frame, len, frame0, frame1)
+        if frametype == 3:
+            return IOLinkFrame.IOLinkFrameType3(frame0, frame1)
         return None
 
     def parseByte(self):

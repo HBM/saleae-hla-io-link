@@ -172,3 +172,10 @@ class IOLinkFrameType2(IOLinkFrame):
     def printframe(self):
         addr = self.data["Addr"][0]
         print(self.data["Direction"] + " Pageaddress " + hex(addr) + " ("+ str(addr) + "d) Value: " + self.data["OD"][:4])
+
+
+class IOLinkFrameType3(IOLinkFrame):
+
+    def __init__(self, first_frame, second_frame):
+        super().__init__("Type_3", 2, first_frame, second_frame)
+        self.data["error"] = "RESERVED TYPE"

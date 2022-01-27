@@ -72,12 +72,24 @@ class IOLinkFrame(AnalyzerFrame):
             'Direction': ('Write', 'Read')[(data & 0x80) != 0],
             'Addr': bytes([data & 0x1F]),
             'Channel': ('Process', 'Page', 'Diagnosis', 'ISDU')[(data >> 5) & 3]})
+        self.bittime = (first_frame.end_time - first_frame.start_time) / 10.5
         self.numOfBytes = 2
+        self.numOfMasterBytes = (framelength - 1, 2)[self.data['Direction'] == 'Read']
         self.frameLength = framelength
         data2 = second_frame.data["data"][0]
         self.cktacc = data ^ (data2 & 0xC0)
         self.cksacc = 0
         self.cktksum = data2 & 0x3F
+
+    def tmax(self):
+        if self.numOfBytes < self.numOfMasterBytes:
+                return self.bittime * 1
+        if self.numOfBytes > self.numOfMasterBytes:
+                return self.bittime * 3
+        return self.bittime * 10
+
+    def canappend(self, frame):
+        return (self.numOfBytes < self.frameLength) and (self.end_time + self.tmax() > frame.start_time)
 
     def append(self, frame):
         self.numOfBytes = self.numOfBytes + 1
@@ -151,6 +163,7 @@ class IOLinkFrameType2(IOLinkFrame):
         self.pdin_len = len[2]
         self.pdout_len = len[0]
         self.od_len = len[1]
+        self.numOfMasterBytes = 2 + len[0] + (len[1], 0)[self.data['Direction'] == 'Read']
 
     def append(self, frame):
         data = frame.data["data"][0]

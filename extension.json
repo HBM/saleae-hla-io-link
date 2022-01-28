@@ -3,7 +3,7 @@
   "apiVersion": "1.0.0",
   "author": "Sebastian Herber",
   "version": "1.0.0",
-  "description": "",
+  "description": "Decode IO-Link frames from the C/Q signal",
   "extensions": {
     "IO Link": {
       "type": "HighLevelAnalyzer",

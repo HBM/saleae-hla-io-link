@@ -107,7 +107,8 @@ class IOLinkAnalyzer(HighLevelAnalyzer):
         self.result_types['Type_2_V'] = {'format': str}
         type2_frames['Type_2_V'] = (self.pdout_len, self.od_len, self.pdin_len)
 
-    def initFrame(self, frame0, frame1):
+    def initFrame(self, frames):
+        frame0, frame1 = frames[0], frames[1]
         if (frame1.start_time - frame0.end_time > (frame0.end_time - frame0.start_time) / 10.5): # frames too far apart
             raise ValueError
         frametype = frame1.data["data"][0] >> 6
@@ -121,27 +122,22 @@ class IOLinkAnalyzer(HighLevelAnalyzer):
             return IOLinkFrame.IOLinkFrameType2(self.type2_frame, len, frame0, frame1)
         raise ValueError
 
-    # ugly but works, refactoring welcome
     def parseByte(self):
-        firstUARTframe = (yield None)
-        pendingFrame = None
+        startframes = ((yield), (yield)) # get 2 start frames
         while True:
-            nextUARTframe = (yield pendingFrame)
             try:
-                pendingFrame = self.initFrame(firstUARTframe, nextUARTframe)
+                pendingFrame = self.initFrame(startframes)
             except ValueError:
-                firstUARTframe = nextUARTframe
-                pendingFrame = None
+                startframes = (startframes[1], (yield)) # keep 1 start frame, get 2nd frame
                 continue
             while True:
-                nextUARTframe = (yield None)
+                nextUARTframe = (yield)
                 if pendingFrame.canappend(nextUARTframe) is False:
-                    pendingFrame.data['error'] = 'Timing'
-                    firstUARTframe = nextUARTframe
+                    pendingFrame.data['error'] = 'Timing/Framing'
+                    startframes = (nextUARTframe, (yield pendingFrame)) # keep 1 frame, get 2nd frame, return incomplete frame
                     break
                 if pendingFrame.append(nextUARTframe) is True:
-                    firstUARTframe = (yield pendingFrame)
-                    pendingFrame = None
+                    startframes = ((yield pendingFrame), (yield)) # get 2 new start frames
                     break
 
     def decode(self, frame: AnalyzerFrame):

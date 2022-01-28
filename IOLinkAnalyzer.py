@@ -96,18 +96,24 @@ class IOLinkAnalyzer(HighLevelAnalyzer):
 
     def __init__(self):
         self.process = self.parseByte()
-        self.process.send(None)
+        next(self.process)
         str = '{{data.Direction}} {{data.Channel}} {{data.Addr}}'
         if self.pdout_len > 0:
-            str = str + ' PDout: {{data.PDout}}'
+            str += ' PDout: {{data.PDout}}'
         if self.od_len > 0:
-            str = str + ' OD: {{data.OD}}'
+            str += ' OD: {{data.OD}}'
         if self.pdin_len > 0:
-            str = str + ' PDin: {{data.PDin}}'
+            str += ' PDin: {{data.PDin}}'
         self.result_types['Type_2_V'] = {'format': str}
         type2_frames['Type_2_V'] = (self.pdout_len, self.od_len, self.pdin_len)
 
-    def initFrame(self, frame0, frame1):
+    def __del__(self):
+        self.process.close()
+
+    def initFrame(self, frames):
+        frame0, frame1 = frames[0], frames[1]
+        if (frame1.start_time - frame0.end_time > (frame0.end_time - frame0.start_time) / 10.5): # frames too far apart
+            raise ValueError
         frametype = frame1.data["data"][0] >> 6
         if frametype == 0:
             return IOLinkFrame.IOLinkFrameType0(frame0, frame1)
@@ -117,16 +123,25 @@ class IOLinkAnalyzer(HighLevelAnalyzer):
         if frametype == 2:
             len = type2_frames[self.type2_frame]
             return IOLinkFrame.IOLinkFrameType2(self.type2_frame, len, frame0, frame1)
-        return None
+        raise ValueError
 
     def parseByte(self):
-        frame: AnalyzerFrame = yield None
+        startframes = ((yield), (yield)) # get 2 start frames
         while True:
-            pendingFrame = self.initFrame(frame, (yield None))
-            ret: AnalyzerFrame = None
-            while ret is None:
-                ret = pendingFrame.append((yield None))
-            frame = yield ret
+            try:
+                pendingFrame = self.initFrame(startframes)
+            except ValueError:
+                startframes = (startframes[1], (yield)) # keep 1 start frame, get 2nd frame
+                continue
+            while True:
+                nextUARTframe = (yield)
+                if pendingFrame.canappend(nextUARTframe) is False:
+                    pendingFrame.data['error'] = 'Timing/Framing'
+                    startframes = (nextUARTframe, (yield pendingFrame)) # keep 1 frame, get 2nd frame, return incomplete frame
+                    break
+                if pendingFrame.append(nextUARTframe) is True:
+                    startframes = ((yield pendingFrame), (yield)) # get 2 new start frames
+                    break
 
     def decode(self, frame: AnalyzerFrame):
         if frame.type != 'data':

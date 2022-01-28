@@ -1,11 +1,11 @@
 {
-  "name": "IO Link",
+  "name": "IO-Link",
   "apiVersion": "1.0.0",
   "author": "Sebastian Herber",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.1.0",
+  "description": "Decode IO-Link frames from the C/Q signal",
   "extensions": {
-    "IO Link": {
+    "IO-Link": {
       "type": "HighLevelAnalyzer",
       "entryPoint": "IOLinkAnalyzer.IOLinkAnalyzer"
     }

@@ -17,6 +17,14 @@ The "examples" folder contains a IO-Link capture with the settings "Type\_1\_V (
 
 ![Example](https://github.com/HBM/saleae-hla-io-link/raw/main/examples/demo.png)
 
+## Changelog
+### v1.1.0
+- Combine UART frames into IO-Link frames in adherence to the timing requirements of the IO-Link specification
+- minor changes
+
+### v1.0.0
+- Initial version
+
 ## Features
 - Support of all M-Sequence types
 - Parsing of all frame fields
@@ -26,7 +34,6 @@ The "examples" folder contains a IO-Link capture with the settings "Type\_1\_V (
 
 ## Non-Features
 Things that are (currently) not supported:
-- Check of timing contrains
 - Interleaved mode
 - Parsing of ISDU requests
 - Anything else I didn't think of...

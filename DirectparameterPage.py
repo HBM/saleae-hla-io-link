@@ -103,7 +103,10 @@ def printDPP1(frame: AnalyzerFrame):
 
 
 def printFrame(frame: AnalyzerFrame):
-    if frame.data['Addr'][0] > 15:
-        printDPP2(frame)
-    else:
-        printDPP1(frame)
+    try:
+        if frame.data['Addr'][0] > 15:
+            printDPP2(frame)
+        else:
+            printDPP1(frame)
+    except (KeyError, TypeError):
+        print("Cannot decode faulty frame")

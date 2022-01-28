@@ -107,6 +107,9 @@ class IOLinkAnalyzer(HighLevelAnalyzer):
         self.result_types['Type_2_V'] = {'format': str}
         type2_frames['Type_2_V'] = (self.pdout_len, self.od_len, self.pdin_len)
 
+    def __del__(self):
+        self.process.close()
+
     def initFrame(self, frames):
         frame0, frame1 = frames[0], frames[1]
         if (frame1.start_time - frame0.end_time > (frame0.end_time - frame0.start_time) / 10.5): # frames too far apart
